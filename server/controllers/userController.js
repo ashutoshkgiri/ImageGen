@@ -125,104 +125,10 @@ const loginUser=async(req,res)=>{
     }
  }
 
- const razorpayInstance=new razorpay({
-    key_id:process.env.RAZORPAY_KEY_ID,
-    key_seceet: process.env.RAZORPAY_KEY_SECRET,
-
- });
-
- const paymentRazorPay=async(req,res)=>{
-          try {
-            const {userId,planId}=req.body;
-
-            const userData=await userModel.findById(userId)
-
-            if(!userId || !planId){
-                return              res.json({
-                    success:false,
-                    message:"missing details"
-    
-                })
-            }
-
-            let credits,plan,amount,date 
-
-            switch(planId){
-                case 'Basic':
-                    plan='Basic'
-                    credits=100
-                    amount=10
-                    break;
-                case 'Advanced':
-                        plan='Advanced'
-                        credits=500
-                        amount=50
-                        break;     
-                case 'Business':
-                            plan='Business'
-                            credits=5000
-                            amount=500
-                            break;
-                 default:
-                    return   res.json({
-                        success:false,
-                        message:"plan not found"
-                    })        
-            }
-
-            date=Date.now();
-
-            const transactionData={
-                userId,
-                plan,
-                amount,
-                credits,
-                date
-
-            }
-
-            const newtransaction=await transactionModel.create(transactionData)
-
-            const options={
-                amount:amount*100,
-                currency:process.env.CURRENCY,
-                receipt:newtransaction._id,
-
-            }
-
-
-            await razorpayInstance.orders.create(options,(error,order)=>{
-                 
-                if(error){
-                    console.log(error);
-                    return res.json({
-                        success:false,
-                        message:error 
-                    })
-                }
-
-                res.json({
-                    success:true,
-                     order
-                })
-            })
-
-             
 
 
 
-            
-          } catch (error) {
-            console.log(error);
-            res.json({
-                success:false,
-                message:error.message
-
-            })
-            
-          }  
- }
 
 
-export{loginUser,registerUser,userCredits,paymentRazorPay}
+export{loginUser,registerUser,userCredits,}
 
